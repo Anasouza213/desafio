@@ -3,25 +3,27 @@ import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar  } from 'reac
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Container } from './styles';
 import {ListaInvestimentosService} from '../../services/ListaInvestimentos/index';
+import Utils from '../../utils/utils'
 
 const ListaInvestimentos = ({navigation : {navigate}}) => {
-    //const [listaInvestimentos, setListaInvestimentos] = useState([]);
+    const [listaInvestimentos, setListaInvestimentos] = useState([]);
 
     function viewDetatils(item){
         console.log(navigation);
         navigation('ResgatePersonalizado', {itemSelecionado: item});
     }
 
-    // useEffect( () => {
-    //         async function getData(){
-    //             const response = await ListaInvestimentosService.getInvestimentos();
-    //             console.log(response.data);
-    //             setListaInvestimentos(response.data.listaInvestimentos);
-    //         }
-    //         getData();
-    //  });
+    useEffect( () => {
+            async function getData(){
+                const response = await ListaInvestimentosService();
+                              
+                console.log(response);
+               // setListaInvestimentos(response.data.listaInvestimentos);
+            }
+            getData();
+     });
 
-    const  listaInvestimentos  = [
+    const  listaInvestimentoss  = [
         {
           "nome": "INVESTIMENTO I",
           "objetivo": "Minha aposentadoria",
@@ -135,25 +137,29 @@ const ListaInvestimentos = ({navigation : {navigate}}) => {
           ]
         }
       ]
-      
-      function formatCurrency(value){
-        return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-    }
+         
    
     return (
        
             <SafeAreaView style={styles.container}>
+                <View style={{backgroundColor: '#f4f4f4', padding: 15}}>
+                  <View style={{marginLeft: 20}}>
+                    <Text >INVESTIMENTO</Text>
+                    <Text style={{marginLeft: 210, marginTop: -19}}>R$</Text>
+                  </View>                  
+                </View>
                 <FlatList               
-                data={listaInvestimentos} 
+                data={listaInvestimentoss} 
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item, index}) => 
                 <TouchableOpacity  onPress={ () => navigate('ResgatePersonalizado', {itemSelecionado: item})}>
                     <View style={styles.item}>
                         <Text style={styles.textTitle}>{item.nome}</Text>     
                         <Text style={styles.text}>{item.objetivo}</Text>
-                        <Text style={styles.textValor}>{formatCurrency(item.saldoTotalDisponivel)}</Text>
+                        <Text style={styles.textValor}>{Utils.formataValor(item.saldoTotalDisponivel)}</Text>
                     </View>
-                </TouchableOpacity>
+                    <View style={styles.border}></View>
+                </TouchableOpacity>                
                 }
                 />
             </SafeAreaView>
@@ -163,14 +169,19 @@ const ListaInvestimentos = ({navigation : {navigate}}) => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      marginTop: StatusBar.currentHeight || 0,
+     
     },
     item: {
-      padding: 5,
-      marginVertical: 5,
+      padding: 5,      
+      marginVertical: 10,
       marginHorizontal:20,
+     
+    },
+    border: {
+      padding: 5,      
+      marginVertical: 10,     
       borderBottomWidth: 1,
-      borderBottomColor: "#ccc"
+      borderBottomColor: "#ccc",
     },
     textTitle: {
       fontSize: 15,
@@ -185,7 +196,8 @@ const styles = StyleSheet.create({
     textValor: {
       fontSize: 15,
       color: "#34495e",
-      marginLeft: 180
+      marginLeft: 180,
+      marginTop: -35
     },
     
   });

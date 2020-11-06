@@ -15,4 +15,7 @@ const AppRoutes = () => (
     </>
 )
 
+const screenOptions ={
+    
+}
 export default AppRoutes

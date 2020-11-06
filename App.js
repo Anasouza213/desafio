@@ -20,7 +20,7 @@ const App = () => {
 }
 const styles = StyleSheet.create({
   container:{
-    marginTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
+    //marginTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
     flex: 1
   }
 })
