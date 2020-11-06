@@ -1,21 +1,30 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+import Header from './src/components/header/Header'
+import Routes from './src/routes';
 
-export default function App() {
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Olá Ana tudo ok com seu app!</Text>
-      <StatusBar style="auto" />
-    </View>
+   <NavigationContainer >
+     <View style={styles.container}>
+            <Header>RESGATE</Header>
+            <Routes />  
+      </View>        
+            
+   </NavigationContainer>
   );
+  
 }
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  container:{
+    marginTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
+    flex: 1
+  }
+})
+
+export default App
+
+
