@@ -137,7 +137,8 @@ const ListaInvestimentos = ({navigation : {navigate}}) => {
           ]
         }
       ]
-         
+      
+      let teste = false;
    
     return (
        
@@ -152,8 +153,10 @@ const ListaInvestimentos = ({navigation : {navigate}}) => {
                 data={listaInvestimentoss} 
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item, index}) => 
-                <TouchableOpacity  onPress={ () => navigate('ResgatePersonalizado', {itemSelecionado: item})}>
-                    <View style={styles.item}>
+                <TouchableOpacity style={item.indicadorCarencia === 'S' ? styles.disabled : styles.item} disabled={item.indicadorCarencia === 'S'} onPress={ () => 
+                    navigate('ResgatePersonalizado', {itemSelecionado : item})
+                  }>
+                    <View style= {{padding: 10}}>
                         <Text style={styles.textTitle}>{item.nome}</Text>     
                         <Text style={styles.text}>{item.objetivo}</Text>
                         <Text style={styles.textValor}>{Utils.formataValor(item.saldoTotalDisponivel)}</Text>
@@ -171,32 +174,36 @@ const styles = StyleSheet.create({
       flex: 1,
      
     },
+    disabled:{
+      padding: 5,      
+      marginVertical: 0,    
+      backgroundColor : '#fcfcfc',
+    },
     item: {
       padding: 5,      
-      marginVertical: 10,
-      marginHorizontal:20,
-     
+      marginVertical: 0,      
+      backgroundColor: '#ffffff'     
     },
     border: {
       padding: 5,      
-      marginVertical: 10,     
       borderBottomWidth: 1,
       borderBottomColor: "#ccc",
+      marginTop: 20
     },
     textTitle: {
       fontSize: 15,
       color: "#34495e",
-      maxWidth: 150
+      maxWidth: 170
     },
     text: {
       fontSize: 13,
       color: "#34495e",
-      maxWidth: 150
+      maxWidth: 170
     },
     textValor: {
       fontSize: 15,
       color: "#34495e",
-      marginLeft: 180,
+      marginLeft: 200,
       marginTop: -35
     },
     
