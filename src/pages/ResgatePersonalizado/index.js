@@ -3,27 +3,34 @@ import { ScrollView, View, FlatList, StyleSheet, Text,TextInput } from 'react-na
 import Utils from '../../utils/utils';
 import ModalResgate from '../../components/modal/modalResgateSucesso';
 import Yup from 'yup';
+import Input from '../../components/input/input';
 
 
 const ResgatePersonalizado = ({navigation: {navigate}, route}) => {
-
+  
   const {itemSelecionado} = route.params;
   const [valorResgate, setValorResgate] = useState({});  
-
+  const [inputValue, setInputValue] = useState({});
   
 
     function calculoResgate (valorT, porcentagem){
-        const valorResgate = (valorT * porcentagem)/100;
-        return Utils.formataValor(valorResgate);
+        const valorR = (valorT * porcentagem)/100;
+        return Utils.formataValor(valorR);
         }
-       
+        
 
-    function handleChange(valorR, index, percetual){
-      const saldoAcumulado = ((itemSelecionado.saldoTotalDisponivel * percetual)/100).toFixed(2);
-      setValorResgate(valorR);
+
+     const onChangeText = (text, index) => {
+      this.setState(prevState => {
+        prevState.inputValue[index] = text
+        return {
+          inputValue: prevState.inputValue
+        }
+      }, () => console.warn(this.state.inputValue))
     }
+  
 
-   
+    
 
     return (
         
@@ -64,12 +71,14 @@ const ResgatePersonalizado = ({navigation: {navigate}, route}) => {
              <View  style={{borderBottomWidth: 1, borderColor: '#f4f4f4', marginBottom: 8, marginTop: 8}}></View>
              <View>
               <Text>Valor a resgatar</Text>
-              <TextInput style={{ height: 40,  }}  key={index}
-                 onChangeText ={(text) => handleChange(text, index, item.percentual)}
-                 value={valorResgate}
-                />                
+              {/* <Input onChangeText={onChangeText(index,)} valorResgate={valorResgate}/>              */}
+              <TextInput 
+                  style={styles.textInput}
+                  keyboardType = 'numeric'
+                  onChangeText = {(text)=> onChangeText(text,index)}
+                  value={setInputValue(inputValue[index])}
+                /> 
             </View>
-              
            </View>
           }
         />
