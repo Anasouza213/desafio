@@ -1,30 +1,29 @@
-import React, { useState } from 'react'
+import React, { useState, setState } from 'react'
 import { ScrollView, View, FlatList, StyleSheet, Text,TextInput } from 'react-native';
 import Utils from '../../utils/utils';
 import ModalResgate from '../../components/modal/modalResgateSucesso';
+import Yup from 'yup';
 
 
 const ResgatePersonalizado = ({navigation: {navigate}, route}) => {
-    const [value, onChangeText] = React.useState({});
-   
+
+  const {itemSelecionado} = route.params;
+  const [valorResgate, setValorResgate] = useState({});  
+
+  
 
     function calculoResgate (valorT, porcentagem){
         const valorResgate = (valorT * porcentagem)/100;
         return Utils.formataValor(valorResgate);
         }
-    
-    
-    function tratarValores(valor, valorMaximo, porcentagem){      
-        const valorTotalResgate = (valorMaximo * porcentagem)/100;
-        if(valor <= valorTotalResgate){
-         
-        }else{
-        //  Alert.alert('Valor tem que ser menor que valor total de resgate')
-        }
+       
 
+    function handleChange(valorR, index, percetual){
+      const saldoAcumulado = ((itemSelecionado.saldoTotalDisponivel * percetual)/100).toFixed(2);
+      setValorResgate(valorR);
     }
 
-    const {itemSelecionado} = route.params;
+   
 
     return (
         
@@ -49,7 +48,7 @@ const ResgatePersonalizado = ({navigation: {navigate}, route}) => {
   
         <FlatList
           data={itemSelecionado.acoes}
-          keyExtractor={item => item.id}
+          keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) =>
         
           <View style={styles.item}>
@@ -59,16 +58,16 @@ const ResgatePersonalizado = ({navigation: {navigate}, route}) => {
             </View>
             <View  style={{borderBottomWidth: 1, borderColor: '#f4f4f4', marginBottom: 8, marginTop: 8}}></View>
             <View>
-              <Text>Saldo total disponivel</Text>
+              <Text>Saldo Acumulado</Text>
               <Text style={{color: "#868686", marginLeft:190, marginTop: -15}}>{calculoResgate(itemSelecionado.saldoTotalDisponivel,item.percentual)}</Text>
             </View>
              <View  style={{borderBottomWidth: 1, borderColor: '#f4f4f4', marginBottom: 8, marginTop: 8}}></View>
              <View>
               <Text>Valor a resgatar</Text>
-              <TextInput style={{ height: 40,  }} onChange={tratarValores(value, itemSelecionado.saldoTotalDisponivel, item.percentual)}
-                  onChangeText={text => onChangeText(text )}
-                  value={value}
-                />
+              <TextInput style={{ height: 40,  }}  key={index}
+                 onChangeText ={(text) => handleChange(text, index, item.percentual)}
+                 value={valorResgate}
+                />                
             </View>
               
            </View>
