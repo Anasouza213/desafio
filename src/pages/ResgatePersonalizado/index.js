@@ -1,18 +1,29 @@
 import React, { useState } from 'react'
-import { TouchableHighlight,ScrollView, View, FlatList, StyleSheet, Text,TextInput,Button } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import Utils from '../../utils/utils'
+import { ScrollView, View, FlatList, StyleSheet, Text,TextInput } from 'react-native';
+import Utils from '../../utils/utils';
+import ModalResgate from '../../components/modal/modalResgateSucesso';
 
 
 const ResgatePersonalizado = ({navigation: {navigate}, route}) => {
-
     const [value, onChangeText] = React.useState({});
+   
 
     function calculoResgate (valorT, porcentagem){
         const valorResgate = (valorT * porcentagem)/100;
         return Utils.formataValor(valorResgate);
         }
     
+    
+    function tratarValores(valor, valorMaximo, porcentagem){      
+        const valorTotalResgate = (valorMaximo * porcentagem)/100;
+        if(valor <= valorTotalResgate){
+         
+        }else{
+        //  Alert.alert('Valor tem que ser menor que valor total de resgate')
+        }
+
+    }
+
     const {itemSelecionado} = route.params;
 
     return (
@@ -38,7 +49,7 @@ const ResgatePersonalizado = ({navigation: {navigate}, route}) => {
   
         <FlatList
           data={itemSelecionado.acoes}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={item => item.id}
           renderItem={({item, index}) =>
         
           <View style={styles.item}>
@@ -54,8 +65,8 @@ const ResgatePersonalizado = ({navigation: {navigate}, route}) => {
              <View  style={{borderBottomWidth: 1, borderColor: '#f4f4f4', marginBottom: 8, marginTop: 8}}></View>
              <View>
               <Text>Valor a resgatar</Text>
-              <TextInput style={{ height: 40,  }}
-                  onChangeText={text => onChangeText(text , calculoResgate(itemSelecionado.saldoTotalDisponivel,item.percentual))}
+              <TextInput style={{ height: 40,  }} onChange={tratarValores(value, itemSelecionado.saldoTotalDisponivel, item.percentual)}
+                  onChangeText={text => onChangeText(text )}
                   value={value}
                 />
             </View>
@@ -64,18 +75,11 @@ const ResgatePersonalizado = ({navigation: {navigate}, route}) => {
           }
         />
          <View style={styles.item}>
-                <Text>Valor total a resgatar</Text>
-                <Text style={styles.text}>{Utils.formataValor(itemSelecionado.saldoTotalDisponivel)}</Text>  
-           </View>
-           <View>
-           <TouchableHighlight
-              style={{ ...styles.openButton, backgroundColor: "#fae128" }}
-              onPress={() => {alert('OK');
-              }}
-            >
-              <Text style={styles.textStyle}>CONFIRMA RESGATE</Text>
-            </TouchableHighlight>
-            </View>
+              <Text>Valor total a resgatar</Text>
+              <Text style={styles.text}>{Utils.formataValor(itemSelecionado.saldoTotalDisponivel)}</Text>  
+          </View>
+           
+            <ModalResgate navegar={navigate}/>
       </ScrollView>
     )
 }
