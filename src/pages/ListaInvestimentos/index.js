@@ -17,6 +17,7 @@ const ListaInvestimentos = ({navigation : {navigate}}) => {
           async function getData(){
              await ListaInvestimentosService()
              .then(({  response  }) =>{
+              // console.log(response.data.listaInvestimentos);
               setListaInvestimentos(response.data.listaInvestimentos);
              });
           }
