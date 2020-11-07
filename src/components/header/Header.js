@@ -18,13 +18,13 @@ const styles = StyleSheet.create({
     headerContainer:{
       alignItems: 'center',
       backgroundColor: '#005aa5',
-      padding: 20,
+      padding: 15,
       alignContent: 'space-around',
      // flex: 1
     },
     texto:{
       fontWeight: 'bold',
-      fontSize: 25,
+      fontSize: 20,
       color: '#ffffff',
       textAlignVertical: 'top',
         }
