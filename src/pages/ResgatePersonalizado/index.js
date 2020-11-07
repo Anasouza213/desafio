@@ -1,4 +1,4 @@
-import React, { useState, setState } from 'react'
+import React, { useState, setState, useEffect } from 'react'
 import { ScrollView, View, FlatList, StyleSheet, Text, TextInput } from 'react-native';
 import Utils from '../../utils/utils';
 import ModalResgate from '../../components/modal/modalResgateSucesso';
@@ -9,39 +9,62 @@ import Input from '../../components/input/input';
 const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
 
   const { itemSelecionado } = route.params;
+  
   const [valorResgate, setValorResgate] = useState({});
+
   const [inputValue, setInputValue] = useState(new Map());
+
+  const [listaResgate, setListaResgate] = useState(itemSelecionado);
+
+  const [totalResgate, setTotalResgate] = useState(0);
+
+  useEffect(() => {
+    itemSelecionado.totalResgate = 0.00;
+    itemSelecionado.acoes.map((item) => {
+      item.saldoAcumulado = calculoResgate(itemSelecionado.saldoTotalDisponivel, item.percentual)
+    });
+    setListaResgate(itemSelecionado);
+  },[listaResgate]);
 
 
   function calculoResgate(valorT, porcentagem) {
     const valorR = (valorT * porcentagem) / 100;
-    return Utils.formataValor(valorR);
+    return parseFloat(valorR.toFixed(2));
   }
 
+  const calculaTotalResgate = () =>{
+    let total = 0;
+    inputValue.forEach((item, value) => {
+      total += parseFloat(item);
+    })
+     setTotalResgate(parseFloat(total));
+  }
 
+  const onChangeText =  (text, index) => {
 
-  const onChangeText = (text, index) => {
     setInputValue(prevState => {
       setInputValue(prevState => prevState.set(index, text));
-    })
+    });
 
-    console.log(inputValue);
+    calculaTotalResgate();
+    setListaResgate(listaResgate)
   }
 
   return (
     <ScrollView style={styles.container}>
+      {/* To criando esse TEXT pra ver se o estado tá atualizando corretamente */}
       <View style={styles.resumoTitle}>
-        <Text style={{ color: "#868686" }}>DADOS DO IVESTIMENTO</Text>
+      <Text style={{ color: "#868686" }}>DADOS DO INVESTIMENTO </Text>
       </View>
       <View style={{ backgroundColor: "#ffffff", padding: 15 }}>
         <View>
           <Text>Nome</Text>
-          <Text style={{ color: "#868686", marginLeft: 190, marginTop: -15 }}>{itemSelecionado.nome}</Text>
+          <Text style={{ color: "#868686", marginLeft: 190, marginTop: -15 }}>{listaResgate.nome}</Text>
         </View>
         <View style={{ borderBottomWidth: 1, borderColor: '#f4f4f4', marginBottom: 10, marginTop: 10 }}></View>
         <View>
           <Text>Saldo total disponivel</Text>
-          <Text style={{ color: "#968686", marginLeft: 190, marginTop: -15 }}>{Utils.formataValor(itemSelecionado.saldoTotalDisponivel)}</Text>
+          <Text style={{ color: "#968686", marginLeft: 190, marginTop: -15 }}>{Utils.formataValor(listaResgate.saldoTotalDisponivel)}</Text>
         </View>
       </View>
       <View style={styles.resumoTitle}>
@@ -49,7 +72,7 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
       </View>
 
       <FlatList
-        data={itemSelecionado.acoes}
+        data={listaResgate.acoes}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) =>
 
@@ -61,7 +84,7 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
             <View style={{ borderBottomWidth: 1, borderColor: '#f4f4f4', marginBottom: 8, marginTop: 8 }}></View>
             <View>
               <Text>Saldo Acumulado</Text>
-              <Text style={{ color: "#868686", marginLeft: 190, marginTop: -15 }}>{calculoResgate(itemSelecionado.saldoTotalDisponivel, item.percentual)}</Text>
+              <Text style={{ color: "#868686", marginLeft: 190, marginTop: -15 }}>{item.saldoAcumulado}</Text>
             </View>
             <View style={{ borderBottomWidth: 1, borderColor: '#f4f4f4', marginBottom: 8, marginTop: 8 }}></View>
             <View>
@@ -71,15 +94,16 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
                 style={styles.textInput}
                 keyboardType='numeric'
                 onChangeText={(text) => onChangeText(text, index)}
-                value={setInputValue(inputValue)}
+                value={inputValue}
               />
             </View>
           </View>
         }
       />
+
       <View style={styles.item}>
         <Text>Valor total a resgatar</Text>
-        <Text style={styles.text}>{Utils.formataValor(itemSelecionado.saldoTotalDisponivel)}</Text>
+        <Text style={styles.text}>{Utils.formataValor(totalResgate)}</Text>
       </View>
 
       <ModalResgate navegar={navigate} />
