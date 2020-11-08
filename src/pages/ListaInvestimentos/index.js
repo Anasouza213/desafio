@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar  } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Container } from './styles';
+import { SafeAreaView, View, StyleSheet, Text } from 'react-native';
 import {ListaInvestimentosService} from '../../services/ListaInvestimentos/index';
-import Utils from '../../utils/utils'
+import ListaInvestimentosComponente from '../../components/listaInvestimentos/ListaInvestimentosComponente';
 
-const ListaInvestimentos = ({navigation : {navigate}}) => {
+const ListaInvestimentos = () => {
     const [listaInvestimentos, setListaInvestimentos] = useState([]);
 
-    function viewDetatils(item){
-        console.log(navigation);
-        navigation('ResgatePersonalizado', {itemSelecionado: item});
-    }
 
     useEffect( () => {
           async function getData(){
@@ -24,8 +18,7 @@ const ListaInvestimentos = ({navigation : {navigate}}) => {
           getData();
      });
    
-    return (
-       
+    return (       
             <SafeAreaView style={styles.container}>
                 <View style={{backgroundColor: '#f4f4f4', padding: 15}}>
                   <View style={{marginLeft: 20}}>
@@ -33,7 +26,7 @@ const ListaInvestimentos = ({navigation : {navigate}}) => {
                     <Text style={{marginLeft: 210, marginTop: -19}}>R$</Text>
                   </View>                  
                 </View>
-                <FlatList               
+                {/* <FlatList               
                 data={listaInvestimentos} 
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item, index}) => 
@@ -48,7 +41,12 @@ const ListaInvestimentos = ({navigation : {navigate}}) => {
                     <View style={styles.border}></View>
                 </TouchableOpacity>                
                 }
-                />
+                /> */}
+                {listaInvestimentos ?
+                  <ListaInvestimentosComponente lista={listaInvestimentos}/> :
+                  <Text>Carregando Investimentos...</Text>
+                  
+                }
             </SafeAreaView>
     )
 }
