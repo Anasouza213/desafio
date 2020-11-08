@@ -1,5 +1,5 @@
 import React, { useState, setState, useEffect } from 'react'
-import { ScrollView, View, FlatList, StyleSheet, Text, TextInput } from 'react-native';
+import { ScrollView, View, FlatList, StyleSheet, Text, TextInput, Alert } from 'react-native';
 import Utils from '../../utils/utils';
 import ModalResgate from '../../components/modal/modalResgateSucesso';
 import Yup from 'yup';
@@ -18,19 +18,27 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
 
   const [totalResgate, setTotalResgate] = useState(0);
 
+  let saldoAcumulado = 0.00;
+
+  const [isValid, setIsvalid] = useState({valid: false, i: null});
+
+  //const [validacaoFinal, setValidacaoFinal] = useState(false);
+
   useEffect(() => {
     itemSelecionado.totalResgate = 0.00;
-    itemSelecionado.acoes.map((item) => {
-      item.saldoAcumulado = calculoResgate(itemSelecionado.saldoTotalDisponivel, item.percentual)
-    });
+    //itemSelecionado.acoes.map((item) => {
+     // setSaldoAcumulado(calculoResgate(itemSelecionado.saldoTotalDisponivel, item.percentual))
+     
+   // });
     setListaResgate(itemSelecionado);
-  },[listaResgate]);
+  },[]);
 
 
-  function calculoResgate(valorT, porcentagem) {
-    const valorR = (valorT * porcentagem) / 100;
-    return parseFloat(valorR.toFixed(2));
-  }
+  function calculoResgate (valorT, porcentagem){
+    const valorR = (valorT * porcentagem)/100;
+    saldoAcumulado = valorR;
+    return Utils.formataValor(valorR);
+    }
 
   const calculaTotalResgate = () =>{
     let total = 0;
@@ -40,19 +48,39 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
      setTotalResgate(parseFloat(total));
   }
 
-  const onChangeText =  (text, index) => {
+  const onChangeText =  (text, index, item) => {
 
     setInputValue(prevState => {
       setInputValue(prevState => prevState.set(index, text));
+      inputValue.forEach((itemInput, i) => {
+        console.log(item);
+        setIsvalid(itemInput <= saldoAcumulado? 
+          {valid : false, 
+          i : i } :
+          {valid : true,
+          i: i} );
+      })
     });
-
     calculaTotalResgate();
-    setListaResgate(listaResgate)
+    setListaResgate(listaResgate);   
   }
+
+  // setValidacaoFinal(() =>{
+  //   if(totalResgate !== 0.00){
+  //     if(totalResgate <= itemSelecionado.saldoTotalDisponivel){
+  //       return true;
+  //     }else{
+  //       //Alert.alert("Valor total a resgatar não pode ser maior que valor total disponível.")
+  //       return false;
+  //     }
+  //   }else{
+  //     //Alert.alert("Atenção! Preencher os valores da forma que deseja resgatar.")
+  //     return false;
+  //   }
+  // });
 
   return (
     <ScrollView style={styles.container}>
-      {/* To criando esse TEXT pra ver se o estado tá atualizando corretamente */}
       <View style={styles.resumoTitle}>
       <Text style={{ color: "#868686" }}>DADOS DO INVESTIMENTO </Text>
       </View>
@@ -84,7 +112,7 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
             <View style={{ borderBottomWidth: 1, borderColor: '#f4f4f4', marginBottom: 8, marginTop: 8 }}></View>
             <View>
               <Text>Saldo Acumulado</Text>
-              <Text style={{ color: "#868686", marginLeft: 190, marginTop: -15 }}>{item.saldoAcumulado}</Text>
+              <Text style={{ color: "#868686", marginLeft: 190, marginTop: -15 }}>{calculoResgate(itemSelecionado.saldoTotalDisponivel, item.percentual)}</Text>
             </View>
             <View style={{ borderBottomWidth: 1, borderColor: '#f4f4f4', marginBottom: 8, marginTop: 8 }}></View>
             <View>
@@ -93,14 +121,16 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
               <TextInput
                 style={styles.textInput}
                 keyboardType='numeric'
-                onChangeText={(text) => onChangeText(text, index)}
+                onChangeText={(text) => onChangeText(text, index, item)}
                 value={inputValue}
               />
+              {isValid.valid && isValid.i === index ?
+              <Text style={{fontSize: 12, color:'#ff8b8b'}}>Valor não pode ser maior que {calculoResgate(itemSelecionado.saldoTotalDisponivel, item.percentual)}.</Text>
+              : <Text></Text>}
             </View>
           </View>
         }
       />
-
       <View style={styles.item}>
         <Text>Valor total a resgatar</Text>
         <Text style={styles.text}>{Utils.formataValor(totalResgate)}</Text>
