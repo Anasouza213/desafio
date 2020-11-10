@@ -123,7 +123,7 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
 
           <View style={styles.item}>
             <View>
-              <Text>Ação { inputValue.get(index) } </Text>
+              <Text>Ação</Text>
               <Text style={{ color: "#868686", marginLeft: 190, marginTop: -15 }}>{item.nome}</Text>
             </View>
             <View style={{ borderBottomWidth: 1, borderColor: '#f4f4f4', marginBottom: 8, marginTop: 8 }}></View>
@@ -139,7 +139,7 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
                 style={styles.textInput}
                 keyboardType='numeric'
                 onChangeText={(text) => onChangeText(text, index, item)}
-                value={inputValue.get(index)}
+                value={inputValue}
               />
                {isValid.valid && isValid.i === index ?
                 <Text style={{fontSize: 12, color:'#ff8b8b'}}>Valor não pode ser maior que {calculoResgate(itemSelecionado.saldoTotalDisponivel, item.percentual)}.</Text>
