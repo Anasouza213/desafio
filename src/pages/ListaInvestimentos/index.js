@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View, StyleSheet, Text } from 'react-native';
-import {ListaInvestimentosService} from '../../services/ListaInvestimentos/index';
+import {ListaInvestimentosService} from '../../services/index';
 import ListaInvestimentosComponente from '../../components/listaInvestimentos/ListaInvestimentosComponente';
 
 const ListaInvestimentos = () => {
@@ -11,7 +11,6 @@ const ListaInvestimentos = () => {
           async function getData(){
              await ListaInvestimentosService()
              .then(({  response  }) =>{
-              // console.log(response.data.listaInvestimentos);
               setListaInvestimentos(response.data.listaInvestimentos);
              });
           }
@@ -26,22 +25,7 @@ const ListaInvestimentos = () => {
                     <Text style={{marginLeft: 210, marginTop: -19}}>R$</Text>
                   </View>                  
                 </View>
-                {/* <FlatList               
-                data={listaInvestimentos} 
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item, index}) => 
-                <TouchableOpacity style={item.indicadorCarencia === 'S' ? styles.disabled : styles.item} disabled={item.indicadorCarencia === 'S'} onPress={ () => 
-                    navigate('ResgatePersonalizado', {itemSelecionado : item})
-                  }>
-                    <View style= {{padding: 10}}>
-                        <Text style={styles.textTitle}>{item.nome}</Text>     
-                        <Text style={styles.text}>{item.objetivo}</Text>
-                        <Text style={styles.textValor}>{Utils.formataValor(item.saldoTotalDisponivel)}</Text>
-                    </View>
-                    <View style={styles.border}></View>
-                </TouchableOpacity>                
-                }
-                /> */}
+                
                 {listaInvestimentos ?
                   <ListaInvestimentosComponente lista={listaInvestimentos}/> :
                   <Text>Carregando Investimentos...</Text>

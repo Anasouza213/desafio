@@ -5,10 +5,6 @@ class Input extends React.Component {
 
     constructor(props) {
       super(props);
-      // construct an array with the number of textInputs we require, 
-      // each value an empty string
-      // set this array in state
-      // set the focusedIndex to null
       let textArray = Array(6).fill('');
       this.state = {
         textArray: textArray,
@@ -18,8 +14,6 @@ class Input extends React.Component {
   
     // this function will handle setting of the state when each TextInput changes
     onChangeText = (text, index) => {
-      // as there are going to be a lot of setState calls
-      // we need access the prevState before we set the next state.
       this.setState(prevState => {
         prevState.textArray[index] = text
         return {
@@ -34,9 +28,6 @@ class Input extends React.Component {
     }
   
     render() {
-      // here we map the items in the `this.state.textArray` 
-      // notice that each TextInput is give a specific value in state
-      // that will stop the overlap
       return (
         <View style={styles.container}>
           {this.state.textArray.map((text, index) => {
