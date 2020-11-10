@@ -35,6 +35,21 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
   },[]);
 
 
+  const formatPrice = (value, quantity = 1, n = 2, x = 3, s = '.', c = ',') => {
+    let re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+      totalValue = value * quantity,
+      num = totalValue.toFixed(Math.max(0, n));
+  
+    return ( num
+      // 'R$ ' +
+      // (c ? num.replace('.', c) : num).replace(
+      //   new RegExp(re, 'g'),
+      //   '$&' + (s || ','),
+      // )
+    );
+  };
+  
+
   const  calculoResgate = (valorT, porcentagem) =>{
     const valorR = (valorT * porcentagem)/100;
     saldoAcumulado = valorR;
@@ -50,17 +65,18 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
   }
 
   const onChangeText =  (text, index, item) => {
-
     setInputValue(prevState => {
-      setInputValue(prevState => prevState.set(index, text));
-      inputValue.forEach((itemInput, i) => {
-        setIsvalid(itemInput <= saldoAcumulado? 
+      setInputValue(prevState => prevState.set(index, formatPrice(text)));
+      inputValue.forEach((itemInput, i) => { 
+        setIsvalid(itemInput <= saldoAcumulado ? 
           {valid : false, 
           i : i } :
           {valid : true,
           i: i} );
-      })
+        });
     });
+
+    console.log(inputValue)
     calculaTotalResgate();
     setListaResgate(listaResgate);   
   }
@@ -123,7 +139,7 @@ const ResgatePersonalizado = ({ navigation: { navigate }, route }) => {
                 style={styles.textInput}
                 keyboardType='numeric'
                 onChangeText={(text) => onChangeText(text, index, item)}
-                value={setInputValue(inputValue)}
+                value={inputValue}
               />
                {isValid.valid && isValid.i === index ?
                 <Text style={{fontSize: 12, color:'#ff8b8b'}}>Valor não pode ser maior que {calculoResgate(itemSelecionado.saldoTotalDisponivel, item.percentual)}.</Text>
